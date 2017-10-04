@@ -1,0 +1,32 @@
+sudo: required
+services:
+  - docker
+language: bash
+env:
+  global:
+    - DOCKER_DISTRIBUTION_VERSION=v2.6.2
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - REPO=monstrenyatko/rpi-registry
+script:
+  # prepare qemu
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  # build registry
+  - ./update.sh $DOCKER_DISTRIBUTION_VERSION
+  # build image
+  - ./build.sh "$REPO:$COMMIT"
+  # get release name
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  # tag and push
+  - >
+    if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+      docker tag $REPO:$COMMIT $REPO:$TRAVIS_BUILD_NUMBER
+      docker tag $REPO:$COMMIT $REPO:$TAG
+      docker push $REPO:$COMMIT
+      docker push $REPO:$TRAVIS_BUILD_NUMBER
+      docker push $REPO:$TAG
+    fi
+notifications:
+  email:
+    on_success: change
+    on_failure: always

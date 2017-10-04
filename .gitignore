@@ -1,0 +1,7 @@
+*~
+/.settings/
+.project
+tmp/
+.vscode/
+
+registry/registry

@@ -1,0 +1,15 @@
+diff --git a/Dockerfile b/Dockerfile
+index 426954a1..5706001e 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -3,6 +3,10 @@ FROM golang:1.7-alpine
+ ENV DISTRIBUTION_DIR /go/src/github.com/docker/distribution
+ ENV DOCKER_BUILDTAGS include_oss include_gcs
+ 
++ARG GOOS=linux
++ARG GOARCH=amd64
++ARG GOARM
++
+ RUN set -ex \
+     && apk add --no-cache make git
+ 

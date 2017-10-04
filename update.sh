@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 set -e
 
 if [ $# -eq 0 ] ; then
@@ -18,7 +19,8 @@ echo "Fetching and building distribution $VERSION..."
 TEMP=`mktemp -d /$TMPDIR/distribution.XXXXXX`
 
 git clone -b $VERSION https://github.com/docker/distribution.git $TEMP
-docker build -t distribution-builder $TEMP
+patch -p1 -d $TEMP < ./go-arg.patch
+docker build -t distribution-builder --build-arg GOOS=linux --build-arg GOARCH=arm --build-arg GOARM=6 $TEMP
 
 # Create a dummy distribution-build container so we can run a cp against it.
 ID=$(docker create distribution-builder)
@@ -32,3 +34,4 @@ docker rm -f $ID
 docker rmi distribution-builder
 
 echo "Done."
+
