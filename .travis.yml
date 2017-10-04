@@ -7,6 +7,7 @@ env:
     - DOCKER_DISTRIBUTION_VERSION=v2.6.2
     - COMMIT=${TRAVIS_COMMIT::8}
     - REPO=monstrenyatko/rpi-registry
+    - TMPDIR=/tmp
 script:
   # prepare qemu
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset

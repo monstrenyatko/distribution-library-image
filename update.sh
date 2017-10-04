@@ -16,7 +16,7 @@ cd `dirname $0`
 echo "Fetching and building distribution $VERSION..."
 
 # Create a temporary directory.
-TEMP=`mktemp -d /$TMPDIR/distribution.XXXXXX`
+TEMP=`mktemp -d $TMPDIR/distribution.XXXXXX`
 
 git clone -b $VERSION https://github.com/docker/distribution.git $TEMP
 patch -p1 -d $TEMP < ./go-arg.patch
